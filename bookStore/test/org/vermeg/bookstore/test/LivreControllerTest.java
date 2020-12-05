@@ -1,11 +1,16 @@
 package org.vermeg.bookstore.test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -67,6 +72,7 @@ class LivreControllerTest {
 		when(mockedLivreService.getAllLivres()).thenReturn(listLivre);
 		this.mockMvc.perform(get("/api/livre/getAllLivres"))
 		.andExpect(status().isOk())
+		.andExpect(jsonPath("$",hasSize(2)))
 		.andDo(print());
 	}
 
@@ -81,25 +87,35 @@ class LivreControllerTest {
 	}
 
 	@Test
-	void testAddLivre() {
+	void testAddLivre() throws Exception{
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
 		mockedLivreService.addLivre(livre);
 		verify(mockedLivreService,times(1)).addLivre(livre);
+		this.mockMvc.perform(post("/api/livre/addLivre"))
+		.andExpect(status().isOk())
+		.andDo(print());
 	}
 
 	@Test
-	void testUpdateLivre() {
+	void testUpdateLivre() throws Exception{
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
+		int idlivre=livre.getId();
 		mockedLivreService.updateLivre(livre);
 		verify(mockedLivreService,times(1)).updateLivre(livre);
+		this.mockMvc.perform(put("/api/livre/updateLivre/"+idlivre))
+		.andExpect(status().isOk())
+		.andDo(print());
 	}
 
 	@Test
-	void testDeleteLivre() {
+	void testDeleteLivre() throws Exception {
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
 		int idlivre=livre.getId();
 		mockedLivreService.deleteLivre(idlivre);
 		verify(mockedLivreService,times(1)).deleteLivre(idlivre);
+		this.mockMvc.perform(delete("/api/livre/deleteLivre/"+idlivre))
+		.andExpect(status().isOk())
+		.andDo(print());
 	}
 
 }

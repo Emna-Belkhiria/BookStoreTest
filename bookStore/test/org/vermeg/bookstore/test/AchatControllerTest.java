@@ -1,12 +1,16 @@
 package org.vermeg.bookstore.test;
 
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -77,6 +81,7 @@ class AchatControllerTest {
 		when(mockedAchatService.getAllAchats(orderid)).thenReturn(listAchat);
 		this.mockMvc.perform(get("/api/achat/getAllAchats/"+orderid))
 		.andExpect(status().isOk())
+		.andExpect(jsonPath("$",hasSize(2)))
 		.andDo(print());
 	}
 
@@ -94,27 +99,34 @@ class AchatControllerTest {
 	}
 
 	@Test
-	void testAddAchat() {
+	void testAddAchat() throws Exception {
 		user=new Utilisateur(1,699875,"rr","yy",22);
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
 		documentAchat = new DocumentAchat(1,"2020-12-15",user);
 		achat = new Achat(1,15,livre,documentAchat);
 		mockedAchatService.addAchat(achat);
 		verify(mockedAchatService,times(1)).addAchat(achat);
+		this.mockMvc.perform(post("/api/achat/addAchat"))
+		.andExpect(status().isOk())
+		.andDo(print());
 	}
 
 	@Test
-	void testUpdateAchat() {
+	void testUpdateAchat()throws Exception {
 		user=new Utilisateur(1,699875,"rr","yy",22);
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
 		documentAchat = new DocumentAchat(1,"2020-12-15",user);
 		achat = new Achat(1,15,livre,documentAchat);
 		mockedAchatService.updateAchat(achat);
+		int achatid=achat.getNumLigne();
 		verify(mockedAchatService,times(1)).updateAchat(achat);
+		this.mockMvc.perform(put("/api/achat/updateAchat/"+achatid))
+		.andExpect(status().isOk())
+		.andDo(print());
 	}
 
 	@Test
-	void testDeleteAchat() {
+	void testDeleteAchat()throws Exception {
 		user=new Utilisateur(1,699875,"rr","yy",22);
 		livre=new Livre(1,10001,"aaa","eee","2020-01-12","vvvbbb",1500);
 		documentAchat = new DocumentAchat(1,"2020-12-15",user);
@@ -122,6 +134,9 @@ class AchatControllerTest {
 		int achatid=achat.getNumLigne();
 		mockedAchatService.deleteAchat(achatid);;
 		verify(mockedAchatService,times(1)).deleteAchat(achatid);
+		this.mockMvc.perform(delete("/api/achat/deleteAchat/"+achatid))
+		.andExpect(status().isOk())
+		.andDo(print());
 		
 	}
 

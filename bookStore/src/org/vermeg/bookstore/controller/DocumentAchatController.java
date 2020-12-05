@@ -24,7 +24,7 @@ public class DocumentAchatController {
         return "Hello";
     }
 	
-	@RequestMapping(value = "/getAllDocumentAchats", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/getAllDocumentAchats/{iduser}", method = RequestMethod.GET,headers = "Accept=application/json")
 	public List<DocumentAchat> getDocumentAchats(@PathVariable int iduser) {
 		
 		List<DocumentAchat> listOfDocumentAchats = documentAchatService.getAllDocumentAchats(iduser);

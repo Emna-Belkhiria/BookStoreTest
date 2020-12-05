@@ -21,7 +21,7 @@ public class DocumentAchatDAO implements DocumentAchatInterface {
 	
 	public List<DocumentAchat> getAllDocumentsAchat(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<DocumentAchat> documentAchatList = session.createQuery("from DocumentAchat where DocumentAchat.iduser ="+id).list();
+		List<DocumentAchat> documentAchatList = session.createQuery("from DocumentAchat where iduser =:"+id).list();
 		
 		for (DocumentAchat da:documentAchatList) {
 			System.out.println(da.toString());
